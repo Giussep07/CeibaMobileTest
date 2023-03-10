@@ -1,4 +1,4 @@
-package com.giussepr.ceiba.ui.theme
+package com.giussepr.ceiba.ui.presentation.theme
 
 import android.app.Activity
 import android.os.Build
