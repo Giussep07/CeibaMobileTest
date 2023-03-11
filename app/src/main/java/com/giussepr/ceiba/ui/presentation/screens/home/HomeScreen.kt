@@ -12,14 +12,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.giussepr.ceiba.ui.presentation.widget.CeibaTopAppBar
 import com.giussepr.ceiba.ui.presentation.widget.UserCardItem
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hiltViewModel()) {
+
+    LaunchedEffect(key1 = true) {
+        viewModel.onUiEvent(HomeViewModel.HomeUiEvent.LoadUsers)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { CeibaTopAppBar(navController = navController) }
