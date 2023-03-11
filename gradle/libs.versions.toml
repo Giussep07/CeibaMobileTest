@@ -13,6 +13,10 @@ androidxTestEspresso = "3.5.1"
 kotlin = "1.7.20"
 hilt = "2.44"
 androidxHilt = "1.0.0"
+retrofit = "2.9.0"
+okhttp = "4.10.0"
+okhttp-interceptor = "4.9.2"
+retrofit-converter = "2.5.0"
 
 [libraries]
 # AndroidX
@@ -43,6 +47,16 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+
+# Retrofit
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+
+# Loggin Interceptor
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp-interceptor" }
+
+# JSON Converter
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit-converter" }
 
 
 [bundles]

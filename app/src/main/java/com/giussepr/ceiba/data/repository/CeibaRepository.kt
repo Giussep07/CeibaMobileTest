@@ -1,0 +1,40 @@
+package com.giussepr.ceiba.data.repository
+
+import com.giussepr.ceiba.data.mapper.UserResponseMapper
+import com.giussepr.ceiba.data.repository.datasource.remote.CeibaRemoteDataSource
+import com.giussepr.ceiba.domain.model.ApiException
+import com.giussepr.ceiba.domain.model.DomainException
+import com.giussepr.ceiba.domain.model.Result
+import com.giussepr.ceiba.domain.model.User
+import com.giussepr.ceiba.domain.repository.CeibaRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
+
+class CeibaRepositoryImpl @Inject constructor(
+    private val ceibaRemoteDataSource: CeibaRemoteDataSource,
+    private val userResponseMapper: UserResponseMapper
+) : CeibaRepository {
+
+    override fun getUsers(): Flow<Result<List<User>>> = flow {
+        try {
+
+            val response = ceibaRemoteDataSource.getUsers()
+
+            if (response.isSuccessful) {
+                response.body()?.let { usersResponse ->
+                    if (usersResponse.isNotEmpty()) {
+                        val users = usersResponse.map { userResponseMapper.mapToUserDomain(it) }
+                        emit(Result.Success(users))
+                    } else {
+                        emit(Result.Error(DomainException("No users found")))
+                    }
+                } ?: emit(Result.Error(DomainException("Error getting users")))
+            } else {
+                emit(Result.Error(ApiException(response.code(), response.message())))
+            }
+        } catch (e: Exception) {
+            emit(Result.Error(DomainException(e.message ?: "Something went wrong")))
+        }
+    }
+}

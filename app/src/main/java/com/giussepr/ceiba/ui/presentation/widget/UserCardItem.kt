@@ -30,12 +30,20 @@ import com.giussepr.ceiba.R
 @Preview(showSystemUi = false)
 fun UserCardItemPreview() {
     MaterialTheme {
-        UserCardItem()
+        UserCardItem(
+            name = "Giussep Ricardo",
+            phone = "3124609512",
+            email = "giussepr@gmail.com") {}
     }
 }
 
 @Composable
-fun UserCardItem() {
+fun UserCardItem(
+    name: String,
+    phone: String,
+    email: String,
+    onSeePublicationClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,7 +58,7 @@ fun UserCardItem() {
         ) {
             // User name
             Text(
-                text = "Alvaro Bernal",
+                text = name,
                 style = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.primary)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -62,7 +70,7 @@ fun UserCardItem() {
                     contentDescription = stringResource(id = R.string.phone_icon)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "300 123 4567", style = MaterialTheme.typography.body1)
+                Text(text = phone, style = MaterialTheme.typography.body1)
             }
             Spacer(modifier = Modifier.height(4.dp))
             // User email
@@ -73,11 +81,11 @@ fun UserCardItem() {
                     contentDescription = stringResource(id = R.string.phone_icon)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "giussepr@gmail.com", style = MaterialTheme.typography.body1)
+                Text(text = email, style = MaterialTheme.typography.body1)
             }
             // Publication button
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { onSeePublicationClick() },
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(top = 16.dp)
