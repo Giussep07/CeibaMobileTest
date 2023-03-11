@@ -8,4 +8,8 @@ class CeibaLocalDataSourceImpl(private val userDao: UserDao): CeibaLocalDataSour
     override suspend fun insertUsers(users: List<UserEntity>) {
         userDao.insertUsers(users)
     }
+
+    override suspend fun getUsers(): List<UserEntity> {
+        return userDao.getUsers()
+    }
 }

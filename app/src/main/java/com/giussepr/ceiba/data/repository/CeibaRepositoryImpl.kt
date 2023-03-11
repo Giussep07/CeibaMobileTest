@@ -21,6 +21,22 @@ class CeibaRepositoryImpl @Inject constructor(
     override fun getUsers(): Flow<Result<List<User>>> = flow {
         try {
 
+            // Check if there are users in the local database
+            val localUsers = ceibaLocalDataSource.getUsers()
+
+            if (localUsers.isNotEmpty()) {
+                val users = localUsers.map { userEntity ->
+                    User(
+                        userEntity.id,
+                        userEntity.name,
+                        userEntity.email,
+                        userEntity.phone,
+                    )
+                }
+                emit(Result.Success(users))
+                return@flow
+            }
+
             val response = ceibaRemoteDataSource.getUsers()
 
             if (response.isSuccessful) {

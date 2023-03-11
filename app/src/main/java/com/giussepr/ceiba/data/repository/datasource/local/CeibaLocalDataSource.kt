@@ -4,4 +4,5 @@ import com.giussepr.ceiba.data.database.entity.UserEntity
 
 interface CeibaLocalDataSource {
     suspend fun insertUsers(users: List<UserEntity>)
+    suspend fun getUsers(): List<UserEntity>
 }
