@@ -1,6 +1,9 @@
 package com.giussepr.ceiba.core.di
 
 import com.giussepr.ceiba.data.api.JsonPlaceholderApi
+import com.giussepr.ceiba.data.database.dao.UserDao
+import com.giussepr.ceiba.data.repository.datasource.local.CeibaLocalDataSource
+import com.giussepr.ceiba.data.repository.datasource.local.CeibaLocalDataSourceImpl
 import com.giussepr.ceiba.data.repository.datasource.remote.CeibaRemoteDataSource
 import com.giussepr.ceiba.data.repository.datasource.remote.CeibaRemoteDataSourceImpl
 import dagger.Module
@@ -15,4 +18,8 @@ object DataSourceModule {
     @Provides
     fun provideCeibaRemoteDataSource(jsonPlaceholderApi: JsonPlaceholderApi): CeibaRemoteDataSource =
         CeibaRemoteDataSourceImpl(jsonPlaceholderApi)
+
+    @Provides
+    fun provideCeibaLocalDataSource(userDao: UserDao): CeibaLocalDataSource =
+        CeibaLocalDataSourceImpl(userDao)
 }

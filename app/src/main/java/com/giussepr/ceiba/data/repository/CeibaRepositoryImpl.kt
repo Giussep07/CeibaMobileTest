@@ -1,6 +1,7 @@
 package com.giussepr.ceiba.data.repository
 
 import com.giussepr.ceiba.data.mapper.UserResponseMapper
+import com.giussepr.ceiba.data.repository.datasource.local.CeibaLocalDataSource
 import com.giussepr.ceiba.data.repository.datasource.remote.CeibaRemoteDataSource
 import com.giussepr.ceiba.domain.model.ApiException
 import com.giussepr.ceiba.domain.model.DomainException
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class CeibaRepositoryImpl @Inject constructor(
     private val ceibaRemoteDataSource: CeibaRemoteDataSource,
+    private val ceibaLocalDataSource: CeibaLocalDataSource,
     private val userResponseMapper: UserResponseMapper
 ) : CeibaRepository {
 
@@ -25,6 +27,10 @@ class CeibaRepositoryImpl @Inject constructor(
                 response.body()?.let { usersResponse ->
                     if (usersResponse.isNotEmpty()) {
                         val users = usersResponse.map { userResponseMapper.mapToUserDomain(it) }
+
+                        val userEntities = usersResponse.map { userResponseMapper.mapToUserEntity(it) }
+                        ceibaLocalDataSource.insertUsers(userEntities)
+
                         emit(Result.Success(users))
                     } else {
                         emit(Result.Error(DomainException("No users found")))
