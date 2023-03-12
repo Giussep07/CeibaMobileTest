@@ -43,7 +43,7 @@ class PublicationsViewModel @Inject constructor(
         }
     }
 
-    private fun onLoadPublications() {
+    fun onLoadPublications() {
         getUserPublicationsUseCase(uiState.userId).map { result ->
             result.fold(
                 onSuccess = { publications ->
