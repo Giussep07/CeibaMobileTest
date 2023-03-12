@@ -27,4 +27,7 @@ object DatabaseModule {
 
     @Provides
     fun provideUserDao(ceibaDatabase: CeibaDatabase) = ceibaDatabase.userDao()
+
+    @Provides
+    fun providePublicationDao(ceibaDatabase: CeibaDatabase) = ceibaDatabase.publicationDao()
 }

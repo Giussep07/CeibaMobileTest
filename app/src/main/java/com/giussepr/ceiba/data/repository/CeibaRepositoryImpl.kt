@@ -66,12 +66,26 @@ class CeibaRepositoryImpl @Inject constructor(
 
     override fun getUserPublications(userId: Int): Flow<Result<List<Publication>>> = flow {
         try {
+
+            // Check if there are publications in the local database
+
+            val localPublications = ceibaLocalDataSource.getUserPublications(userId)
+
+            if (localPublications.isNotEmpty()) {
+                val publications = localPublications.map { publicationMapper.mapToDomainPublication(it) }
+                emit(Result.Success(publications))
+                return@flow
+            }
+
             val response = ceibaRemoteDataSource.getUserPublications(userId)
 
             if (response.isSuccessful) {
                 response.body()?.let { publicationsResponse ->
                     if (publicationsResponse.isNotEmpty()) {
                         val publications = publicationsResponse.map { publicationMapper.mapToDomainPublication(it) }
+                        val publicationEntities = publicationsResponse.map { publicationMapper.mapToEntityPublication(it) }
+                        ceibaLocalDataSource.insertPublications(publicationEntities)
+
                         emit(Result.Success(publications))
                     } else {
                         emit(Result.Error(DomainException("No publications found")))
