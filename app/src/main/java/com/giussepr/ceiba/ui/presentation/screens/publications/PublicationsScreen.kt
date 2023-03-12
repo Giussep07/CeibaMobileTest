@@ -2,6 +2,7 @@ package com.giussepr.ceiba.ui.presentation.screens.publications
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -21,8 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +48,11 @@ fun PublicationsScreenPreview() {
 
 @Composable
 fun PublicationsScreen(navController: NavHostController, viewModel: PublicationsViewModel = hiltViewModel()) {
+
+    LaunchedEffect(key1 = true) {
+        viewModel.onUiEvent(PublicationsViewModel.PublicationsUiEvent.LoadPublications)
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -98,20 +107,35 @@ fun PublicationsScreen(navController: NavHostController, viewModel: Publications
                     text = stringResource(id = R.string.publications),
                     style = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.primary)
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            val list = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(vertical = 16.dp)
-            ) {
-                items(list) {
-                    PublicationCardItem(
-                        title = "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-                        body = "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-                    )
+            if (viewModel.uiState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(bottom = 16.dp)
+                ) {
+                    items(viewModel.uiState.publications) { publication ->
+                        PublicationCardItem(publication.title, publication.body)
+                    }
+                }
+            }
+
+            if (!viewModel.uiState.isLoading && viewModel.uiState.errorMessage.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = viewModel.uiState.errorMessage,
+                    style = MaterialTheme.typography.h6,
+                    color = Color.Red
+                )
             }
 
         }

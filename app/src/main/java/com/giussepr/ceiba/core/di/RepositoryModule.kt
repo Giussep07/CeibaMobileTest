@@ -1,5 +1,6 @@
 package com.giussepr.ceiba.core.di
 
+import com.giussepr.ceiba.data.mapper.PublicationMapper
 import com.giussepr.ceiba.data.mapper.UserResponseMapper
 import com.giussepr.ceiba.data.repository.CeibaRepositoryImpl
 import com.giussepr.ceiba.data.repository.datasource.local.CeibaLocalDataSource
@@ -18,6 +19,12 @@ object RepositoryModule {
     fun provideCeibaRepository(
         remoteDataSource: CeibaRemoteDataSource,
         localDataSource: CeibaLocalDataSource,
-        userResponseMapper: UserResponseMapper
-    ): CeibaRepository = CeibaRepositoryImpl(remoteDataSource, localDataSource, userResponseMapper)
+        userResponseMapper: UserResponseMapper,
+        publicationMapper: PublicationMapper
+    ): CeibaRepository = CeibaRepositoryImpl(
+        remoteDataSource,
+        localDataSource,
+        userResponseMapper,
+        publicationMapper
+    )
 }

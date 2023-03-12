@@ -1,6 +1,7 @@
 package com.giussepr.ceiba.core.di
 
 import com.giussepr.ceiba.domain.repository.CeibaRepository
+import com.giussepr.ceiba.domain.usecase.GetUserPublicationsUseCase
 import com.giussepr.ceiba.domain.usecase.GetUsersUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,4 +15,8 @@ object UseCaseModule {
     @Provides
     fun provideGetPostsUseCase(ceibaRepository: CeibaRepository) =
         GetUsersUseCase(ceibaRepository)
+
+    @Provides
+    fun provideGetUserPublicationsUseCase(ceibaRepository: CeibaRepository) =
+        GetUserPublicationsUseCase(ceibaRepository)
 }
