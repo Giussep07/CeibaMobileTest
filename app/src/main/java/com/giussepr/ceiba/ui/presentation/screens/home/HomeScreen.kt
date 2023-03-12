@@ -88,7 +88,10 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hilt
 
 @Composable
 fun HomeScreenContent(viewModel: HomeViewModel, navController: NavHostController) {
-    SearchTextField(viewModel.uiState.searchTerm, viewModel::onSearchTermChanged)
+    SearchTextField(
+        viewModel.uiState.searchTerm,
+        viewModel::onSearchTermChanged
+    )
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),

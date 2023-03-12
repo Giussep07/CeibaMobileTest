@@ -35,6 +35,10 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { users ->
                     this.usersList = users
                     uiState = uiState.copy(users = users, isLoading = false)
+
+                    if (uiState.searchTerm.value.isNotEmpty()) {
+                        onSearchTermChanged(uiState.searchTerm.value)
+                    }
                 },
                 onFailure = {
                     uiState = uiState.copy(errorMessage = it.message, isLoading = false)
