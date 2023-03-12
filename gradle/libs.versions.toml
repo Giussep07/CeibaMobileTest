@@ -38,6 +38,7 @@ androidx-compose-material3 = { module = "androidx.compose.material:material", ve
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHilt" }
 # Navigation
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNavigation" }
+androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "androidxNavigation" }
 
 # Test
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestExt" }

@@ -11,8 +11,8 @@ import com.giussepr.ceiba.ui.presentation.screens.publications.PublicationsScree
 import com.giussepr.ceiba.ui.presentation.screens.splash.SplashScreen
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = AppScreens.SplashScreen.route) {
+fun AppNavigation(navController: NavHostController, startDestination: String = AppScreens.SplashScreen.route) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(AppScreens.SplashScreen.route) {
             SplashScreen(navController)
         }
