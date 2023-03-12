@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.giussepr.ceiba.domain.model.User
 import com.giussepr.ceiba.domain.model.fold
 import com.giussepr.ceiba.domain.usecase.GetUsersUseCase
+import com.giussepr.ceiba.utils.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getUsersUseCase: GetUsersUseCase
+    private val getUsersUseCase: GetUsersUseCase,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
@@ -38,7 +40,7 @@ class HomeViewModel @Inject constructor(
                     uiState = uiState.copy(errorMessage = it.message, isLoading = false)
                 })
         }.onStart { uiState = uiState.copy(isLoading = true) }
-            .flowOn(Dispatchers.IO).launchIn(viewModelScope)
+            .flowOn(dispatcherProvider.io).launchIn(viewModelScope)
     }
 
     fun onUiEvent(uiEvent: HomeUiEvent) {

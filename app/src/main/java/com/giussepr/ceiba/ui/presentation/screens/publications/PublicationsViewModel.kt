@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.giussepr.ceiba.domain.model.Publication
 import com.giussepr.ceiba.domain.model.fold
 import com.giussepr.ceiba.domain.usecase.GetUserPublicationsUseCase
+import com.giussepr.ceiba.utils.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PublicationsViewModel @Inject constructor(
     private val getUserPublicationsUseCase: GetUserPublicationsUseCase,
+    private val dispatcherProvider: DispatcherProvider,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -51,7 +53,7 @@ class PublicationsViewModel @Inject constructor(
                     uiState = uiState.copy(errorMessage = it.message, isLoading = false)
                 })
         }.onStart { uiState = uiState.copy(isLoading = true) }
-            .flowOn(Dispatchers.IO).launchIn(viewModelScope)
+            .flowOn(dispatcherProvider.io).launchIn(viewModelScope)
     }
 
     fun onUiEvent(uiEvent: PublicationsUiEvent) {
