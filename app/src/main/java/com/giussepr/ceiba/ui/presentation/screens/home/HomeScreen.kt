@@ -16,16 +16,23 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.giussepr.ceiba.domain.model.User
+import androidx.navigation.compose.rememberNavController
 import com.giussepr.ceiba.ui.presentation.widget.CeibaTopAppBar
+import com.giussepr.ceiba.ui.presentation.widget.SearchTextField
 import com.giussepr.ceiba.ui.presentation.widget.UserCardItem
+
+@Composable
+@Preview
+fun HomeScreenPreview() {
+    HomeScreen(rememberNavController())
+}
 
 @Composable
 fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -44,41 +51,48 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hilt
                 .background(MaterialTheme.colors.background)
                 .padding(paddingValues)
         ) {
-            when (val state = viewModel.uiState.collectAsState().value) {
-                is HomeViewModel.HomeUiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+            if (viewModel.uiState.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
+            }
 
-                is HomeViewModel.HomeUiState.Success -> {
-                    HomeScreenContent(userList = state.users)
-                }
+            if (!viewModel.uiState.isLoading) {
+                HomeScreenContent(viewModel)
+            }
 
-                is HomeViewModel.HomeUiState.Error -> {
-                    Text(
-                        modifier = Modifier.padding(16.dp),
-                        text = state.message,
-                        style = MaterialTheme.typography.h6,
-                        color = Red
-                    )
-                }
+            if (viewModel.uiState.users.isEmpty()) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "List is empty",
+                    style = MaterialTheme.typography.h6
+                )
+            }
+
+            if (!viewModel.uiState.isLoading && viewModel.uiState.errorMessage.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = viewModel.uiState.errorMessage,
+                    style = MaterialTheme.typography.h6,
+                    color = Red
+                )
             }
         }
     }
 }
 
 @Composable
-fun HomeScreenContent(userList: List<User>) {
+fun HomeScreenContent(viewModel: HomeViewModel) {
+    SearchTextField(viewModel.uiState.searchTerm, viewModel::onSearchTermChanged)
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        items(userList) {
+        items(viewModel.uiState.users) {
             UserCardItem(name = it.name, phone = it.phone, email = it.email) {}
         }
     }

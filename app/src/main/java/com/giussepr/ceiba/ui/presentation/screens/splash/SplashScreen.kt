@@ -32,7 +32,8 @@ fun SplashScreenPreview() {
 @Composable
 fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
-        delay(2000L)
+        // TODO: This value is for testing purposes should be changed
+        delay(200L)
         navController.popBackStack()
         navController.navigate(AppScreens.Home.route)
     }
