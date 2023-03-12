@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
 
     private var usersList: List<User> = emptyList()
 
-    private fun onLoadUsers() {
+    fun onLoadUsers() {
         getUsersUseCase().map { result ->
             result.fold(
                 onSuccess = { users ->

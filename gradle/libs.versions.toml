@@ -18,6 +18,8 @@ okhttp = "4.10.0"
 okhttp-interceptor = "4.9.2"
 retrofit-converter = "2.5.0"
 androidxRoom = "2.5.0"
+mockk = "1.13.3"
+kotlinXCoroutinesTest = "1.6.1"
 
 [libraries]
 # AndroidX
@@ -63,6 +65,12 @@ retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", ve
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoom" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoom" }
+
+# Mockk
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+# Test kotlinx-coroutines
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinXCoroutinesTest" }
 
 [bundles]
 compose = [
