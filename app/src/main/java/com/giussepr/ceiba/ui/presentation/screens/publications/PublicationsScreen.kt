@@ -131,7 +131,7 @@ fun PublicationsScreen(navController: NavHostController, viewModel: Publications
 
             if (!viewModel.uiState.isLoading && viewModel.uiState.errorMessage.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     text = viewModel.uiState.errorMessage,
                     style = MaterialTheme.typography.h6,
                     color = Color.Red

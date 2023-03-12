@@ -4,6 +4,7 @@ import com.giussepr.ceiba.data.mapper.PublicationMapper
 import com.giussepr.ceiba.data.mapper.UserResponseMapper
 import com.giussepr.ceiba.data.repository.datasource.local.CeibaLocalDataSource
 import com.giussepr.ceiba.data.repository.datasource.remote.CeibaRemoteDataSource
+import com.giussepr.ceiba.data.utils.NetworkUtils
 import com.giussepr.ceiba.domain.model.ApiException
 import com.giussepr.ceiba.domain.model.DomainException
 import com.giussepr.ceiba.domain.model.Publication
@@ -18,7 +19,8 @@ class CeibaRepositoryImpl @Inject constructor(
     private val ceibaRemoteDataSource: CeibaRemoteDataSource,
     private val ceibaLocalDataSource: CeibaLocalDataSource,
     private val userResponseMapper: UserResponseMapper,
-    private val publicationMapper: PublicationMapper
+    private val publicationMapper: PublicationMapper,
+    private val networkUtils: NetworkUtils,
 ) : CeibaRepository {
 
     override fun getUsers(): Flow<Result<List<User>>> = flow {
@@ -40,24 +42,28 @@ class CeibaRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            val response = ceibaRemoteDataSource.getUsers()
+            if (networkUtils.isInternetAvailable()) {
+                val response = ceibaRemoteDataSource.getUsers()
 
-            if (response.isSuccessful) {
-                response.body()?.let { usersResponse ->
-                    if (usersResponse.isNotEmpty()) {
-                        val users = usersResponse.map { userResponseMapper.mapToUserDomain(it) }
+                if (response.isSuccessful) {
+                    response.body()?.let { usersResponse ->
+                        if (usersResponse.isNotEmpty()) {
+                            val users = usersResponse.map { userResponseMapper.mapToUserDomain(it) }
 
-                        val userEntities =
-                            usersResponse.map { userResponseMapper.mapToUserEntity(it) }
-                        ceibaLocalDataSource.insertUsers(userEntities)
+                            val userEntities =
+                                usersResponse.map { userResponseMapper.mapToUserEntity(it) }
+                            ceibaLocalDataSource.insertUsers(userEntities)
 
-                        emit(Result.Success(users))
-                    } else {
-                        emit(Result.Error(DomainException("No users found")))
-                    }
-                } ?: emit(Result.Error(DomainException("Error getting users")))
+                            emit(Result.Success(users))
+                        } else {
+                            emit(Result.Error(DomainException("No users found")))
+                        }
+                    } ?: emit(Result.Error(DomainException("Error getting users")))
+                } else {
+                    emit(Result.Error(ApiException(response.code(), response.message())))
+                }
             } else {
-                emit(Result.Error(ApiException(response.code(), response.message())))
+                emit(Result.Error(DomainException("Check your internet connection")))
             }
         } catch (e: Exception) {
             emit(Result.Error(DomainException(e.message ?: "Something went wrong")))
@@ -77,22 +83,26 @@ class CeibaRepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            val response = ceibaRemoteDataSource.getUserPublications(userId)
+            if (networkUtils.isInternetAvailable()) {
+                val response = ceibaRemoteDataSource.getUserPublications(userId)
 
-            if (response.isSuccessful) {
-                response.body()?.let { publicationsResponse ->
-                    if (publicationsResponse.isNotEmpty()) {
-                        val publications = publicationsResponse.map { publicationMapper.mapToDomainPublication(it) }
-                        val publicationEntities = publicationsResponse.map { publicationMapper.mapToEntityPublication(it) }
-                        ceibaLocalDataSource.insertPublications(publicationEntities)
+                if (response.isSuccessful) {
+                    response.body()?.let { publicationsResponse ->
+                        if (publicationsResponse.isNotEmpty()) {
+                            val publications = publicationsResponse.map { publicationMapper.mapToDomainPublication(it) }
+                            val publicationEntities = publicationsResponse.map { publicationMapper.mapToEntityPublication(it) }
+                            ceibaLocalDataSource.insertPublications(publicationEntities)
 
-                        emit(Result.Success(publications))
-                    } else {
-                        emit(Result.Error(DomainException("No publications found")))
-                    }
-                } ?: emit(Result.Error(DomainException("Error getting publications")))
+                            emit(Result.Success(publications))
+                        } else {
+                            emit(Result.Error(DomainException("No publications found")))
+                        }
+                    } ?: emit(Result.Error(DomainException("Error getting publications")))
+                } else {
+                    emit(Result.Error(ApiException(response.code(), response.message())))
+                }
             } else {
-                emit(Result.Error(ApiException(response.code(), response.message())))
+                emit(Result.Error(DomainException("Check your internet connection")))
             }
         } catch (e: Exception) {
             emit(Result.Error(DomainException(e.message ?: "Something went wrong")))
