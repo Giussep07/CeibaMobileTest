@@ -23,8 +23,8 @@ fun CeibaTopAppBar(
         title = {
             Text(text = title)
         },
-        navigationIcon = {
-            if (navController.previousBackStackEntry != null) {
+        navigationIcon = if (navController.previousBackStackEntry != null) {
+            {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
@@ -32,6 +32,9 @@ fun CeibaTopAppBar(
                     )
                 }
             }
-        }
+        } else {
+            null
+        },
+        actions = {}
     )
 }
