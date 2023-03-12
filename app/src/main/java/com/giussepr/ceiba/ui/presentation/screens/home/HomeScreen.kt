@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.giussepr.ceiba.ui.presentation.navigation.AppScreens
 import com.giussepr.ceiba.ui.presentation.widget.CeibaTopAppBar
 import com.giussepr.ceiba.ui.presentation.widget.SearchTextField
 import com.giussepr.ceiba.ui.presentation.widget.UserCardItem
@@ -61,7 +62,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hilt
             }
 
             if (!viewModel.uiState.isLoading) {
-                HomeScreenContent(viewModel)
+                HomeScreenContent(viewModel, navController)
             }
 
             if (viewModel.uiState.users.isEmpty()) {
@@ -85,7 +86,7 @@ fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hilt
 }
 
 @Composable
-fun HomeScreenContent(viewModel: HomeViewModel) {
+fun HomeScreenContent(viewModel: HomeViewModel, navController: NavHostController) {
     SearchTextField(viewModel.uiState.searchTerm, viewModel::onSearchTermChanged)
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -93,7 +94,16 @@ fun HomeScreenContent(viewModel: HomeViewModel) {
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(viewModel.uiState.users) {
-            UserCardItem(name = it.name, phone = it.phone, email = it.email) {}
+            UserCardItem(name = it.name, phone = it.phone, email = it.email) {
+                val route = AppScreens.PublicationsScreen.withArgs(
+                    it.id.toString(),
+                    it.name,
+                    it.phone,
+                    it.email
+                )
+
+                navController.navigate(route)
+            }
         }
     }
 }
