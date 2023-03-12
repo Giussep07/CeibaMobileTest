@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Ceiba</string>
+    <string name="logo_ceiba">Logo Ceiba</string>
+    <string name="phone_icon">Icon Phone</string>
+    <string name="see_publications">Ver Publicaciones</string>
+    <string name="mobile_test">Prueba de ingreso</string>
+    <string name="navigate_back">Navegar hacia atrás</string>
+    <string name="search_user">Buscar usuario</string>
+    <string name="publications">Publicaciones</string>
 </resources>
